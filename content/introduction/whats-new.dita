@@ -1,20 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="whats-new">
-  <title>What's New in Version 4.6.0?</title>
+  <title>What's New?</title>
   <body> 
     <p>Couchbase Server is a comprehensive, general purpose database that supports broad set of web,
-      mobile, and IoT applications. </p>
-    <p>Couchbase Server 4.6 delivers some exciting capabilities for cross datacenter replication,
-      security, query, tools, and application development. This release also adds support for
-      Microsoft Windows 10 Anniversary Edition and Mac OS Sierra. For more information, see <xref
-        href="../install/install-platforms.dita">Supported Platforms</xref>.</p>
-    
-    <section><title>Cross Datacenter Replication</title>
-    <dl>
-      <dlentry>
-        <dt>Cross Datacenter Replication with Timestamp-based Conflict Resolution</dt>
-        <dd>This release introduces a new option to resolve conflicts with XDCR using timestamps.
+      mobile, and IoT applications. </p><section>
+        <title>Release 4.6.2</title>
+      <p><b>N1QL Enhancements</b></p>
+      <p>N1QL introduces a number of new functions and performance optimizations in the Couchbase
+        Server 4.6.2 Query engine. <dl>
+          <dlentry>
+            <dt>Expression Support in FROM clause</dt>
+            <dd>The earlier releases allow only keyspace identifier or subquery in the SELECT
+              statement's FROM clause. Couchbase Server 4.6.2 adds support for generic N1QL <xref
+                href="../n1ql/n1ql-language-reference/index.dita#n1ql-lang-ref">expressions</xref>
+              in the SELECT statement’s  FROM clause. This is a very powerful functionality, as it
+              enables usage of various N1QL functions, operators, path expressions, language
+              constructs etc. on constant expressions, variables, and on subqueries. Further, it
+              improves performance of correlated subqueries that access nested arrays/sub-documents
+              of the same document (as in the parent query). See <xref
+                href="../n1ql/n1ql-language-reference/from.dita#concept_rnt_zfk_np"/>and <xref
+                href="../n1ql/n1ql-language-reference/subqueries.dita#topic_9"/>for more
+              details.</dd>
+          </dlentry>
+        </dl><dl>
+          <dlentry>
+            <dt>Array Indexing </dt>
+            <dd>The following enhancements are added in the <xref
+                href="https://developer.couchbase.com/documentation/server/4.6/n1ql/n1ql-language-reference/indexing-arrays.html"
+                format="html" scope="external">Array Indexing</xref> feature:</dd>
+            <dd>
+              <ul id="ul_xdb_fvk_pz">
+                <li>Allow arbitrary variable names in array index selection. That means, a SELECT
+                  query that needs to use an array index, can use different variable names in the
+                  query from those used in the array index definition.</li>
+                <li>Support simpler syntax for array indexing when all array elements are indexed,
+                  without requiring to use the ARRAY operator in the index definition.</li>
+                <li>Relax the mandatory array index-key, to create covering array-index</li>
+              </ul>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>String Functions</dt>
+            <dd>The following new string functions are added. For more details and examples, see
+                <xref href="../n1ql/n1ql-language-reference/stringfun.dita"/>.<ul id="ul_tkc_sqk_pz">
+                <li><codeph>HAS_TOKEN()</codeph> - This function checks if 'str' contains the token
+                  't'.</li>
+                <li><codeph>CONTAINS_TOKEN()</codeph> - This function is an alias of
+                    <codeph>HAS_TOKEN()</codeph>.</li>
+                <li><codeph>CONTAINS_TOKEN_LIKE()</codeph> - Checks if ‘str’ contains the token ‘t’,
+                  which can have wildcards same as LIKE operator.</li>
+                <li><codeph>CONTAINS_TOKEN_REGEXP</codeph> - Checks if ‘str’ contains the token ‘t’,
+                  which can have regular expressions.</li>
+              </ul></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Object Functions</dt>
+            <dd>The following new object functions are added. For more details and examples, see
+                <xref href="../n1ql/n1ql-language-reference/objectfun.dita"/>.<ul id="ul_kbh_mrk_pz">
+                <li><codeph>OBJECT_RENAME()</codeph> - Renames a field name f_old in the JSON object
+                  ‘obj’ to ‘f_new’.</li>
+                <li><codeph>OBJECT_REPLACE()</codeph> - Replaces all occurrences of the value
+                  old_val to ‘new_val’ for any of the fields in the JSON object ‘obj’</li>
+              </ul></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Date Functions</dt>
+            <dd>The following new date functions are added. For more details and examples, see <xref
+                href="../n1ql/n1ql-language-reference/datefun.dita"/>.<ul id="ul_irm_4rk_pz">
+                <li><codeph>DATE_RANGE_STR</codeph> - This funcion is enabled to accept different
+                  supported date formats for different parameters. This removes the earlier
+                  limitation to require all parameters to be in the same format.</li>
+                <li>
+                  <codeph>WEEKDAY_STR()</codeph> - Returns the weekday name from the input date in
+                  string format.</li>
+                <li><codeph>WEEKDAY_MILLIS()</codeph> - Returns the weekday name from the input date
+                  in Unix timestamp.</li>
+              </ul></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Performance Improvements</dt>
+            <dd>Couchbase Server 4.6.2 includes the following improvements: <ul id="ul_oky_15k_pz">
+                <li> The following functions are enabled to automatically use available functional
+                  indexes created with <codeph>SUFFIXES()</codeph> or <codeph>TOKENS()</codeph>
+                  respectively called <i>suffixes-index</i> and <i>tokens-index</i>.<ul
+                    id="ul_x2k_k5k_pz">
+                    <li dir="ltr">
+                      <p dir="ltr"><codeph>LIKE</codeph> operator to use <i>suffixes-index</i></p>
+                    </li>
+                    <li dir="ltr">
+                      <p dir="ltr"><codeph>CONTAINS()</codeph> can use <i>suffixes-index</i></p>
+                    </li>
+                    <li dir="ltr">
+                      <p dir="ltr"><codeph>CONTAINS_TOKEN_LIKE()</codeph> can use
+                          <i>suffixes-index</i></p>
+                    </li>
+                    <li dir="ltr">
+                      <p dir="ltr"><codeph>HAS_TOKEN()</codeph>, <codeph>CONTAINS_TOKEN()</codeph>
+                        can use <i>tokens-index</i></p>
+                    </li>
+                    <li><codeph>CONTAINS_TOKEN_REGEXP()</codeph> can use <i>tokens-index</i></li>
+                  </ul></li>
+                <li>Push down the operators ORDER BY, COUNT(), MIN() to GSI index when using
+                  covering UNNEST indexes.</li>
+                <li>Push down LIMIT operation to Index during IntersectScan, UnionScan, and
+                  DistinctScan</li>
+                <li>New query execution operator OrderedIntersectScan is introduced to leverage the
+                  index order during intersect scans. For example, when two index scan are being
+                  intersected, and the SELECT query has ORDER BY clause on an attribute that is the
+                  leading index keys of one of the index, then the order of results obtained from
+                  that index are preserved through the query processing to avoid redundant
+                  sorting.</li>
+                <li>Optimize processing of queries to use qualified secondary index when the
+                  WHERE-clause has IN operator with parameterized right side value. Earlier releases
+                  used to do full index scan.</li>
+                <li>Queries having WHERE-clause with NOT IN or NOT WITHIN operators are enabled to
+                  use qualified secondary indexes. In earlier releases, they used primary
+                  index.</li>
+                <li>Queries having WHERE-clause with OR predicates<ul id="ul_xh2_z5k_pz">
+                    <li>With disjoint OR conditions (on different attributes) are enabled to use
+                      qualified secondary indexes for individual conditions. For example, if the
+                      predicate is (a = 5) OR (b = 10), and two different indexes exists on a and b
+                      separately, then both indexes are used for the query. Earlier releases used to
+                      use primary index.</li>
+                    <li>Create variable spans for the Index Scans when using OR predicates to the
+                      same index. For example, a predicate like (a = 5) OR ((a = 10) and (b = 10)),
+                      can use just one index with both a and b as index keys. In such case, N1QL
+                      will generate more optimized spans for the index scan.</li>
+                  </ul></li>
+              </ul></dd>
+          </dlentry>
+        </dl></p>
+      </section><section id="section_460">
+      <title>Release 4.6.0</title> Couchbase Server 4.6 delivers some exciting capabilities for
+      cross datacenter replication, security, query, tools, and application development. This
+      release also adds support for Microsoft Windows 10 Anniversary Edition and Mac OS Sierra. For
+      more information, see <xref href="../install/install-platforms.dita">Supported
+        Platforms</xref>. <p><b>Cross Datacenter Replication</b></p><dl>
+        <dlentry>
+          <dt>Cross Datacenter Replication with Timestamp-based Conflict Resolution</dt>
+          <dd>This release introduces a new option to resolve conflicts with XDCR using timestamps.
             With this option, conflicts are resolved by comparing timestamps of conflicting
             documents. The timestamp-based conflict resolution provides a new option for
             applications which want users to continue seeing the latest change or version, no matter
@@ -22,101 +147,97 @@
             combines the best of logical and physical clocks and captures the causality relationship
             like logical clocks. For more information, see <xref
               href="../xdcr/xdcr-conflict-resolution.dita#conflict-resolution/timestamp-based-conflict-resolution"
-              />.</dd>
-      </dlentry>
-    </dl>
-    </section>
-    <section><title>Security</title>
-      <dl>
+            />.</dd>
+        </dlentry>
+      </dl>
+      <p><b>Security</b></p><dl>
         <dlentry>
           <dt>Hardened Security with Pluggable Authentication Module</dt>
-          <dd>By adding support for Pluggable Authentication Modules (PAM), this release of Couchbase
-            Server enables you to centralize and synchronize password management across servers. You
-            can use existing password management services such as Linux /etc/shadow for a Couchbase
-            cluster. You can also control password expiration rules and other password policies. PAM
-            Authentication in Couchbase is available only on Linux platform and is an Enterprise only
-            feature. For more information, see <xref
+          <dd>By adding support for Pluggable Authentication Modules (PAM), this release of
+            Couchbase Server enables you to centralize and synchronize password management across
+            servers. You can use existing password management services such as Linux /etc/shadow for
+            a Couchbase cluster. You can also control password expiration rules and other password
+            policies. PAM Authentication in Couchbase is available only on Linux platform and is an
+            Enterprise only feature. For more information, see <xref
               href="../security/security-pam-auth.dita"/>.</dd>
         </dlentry>
         <dlentry>
-        <dt>Secret Management</dt>
+          <dt>Secret Management</dt>
           <dd>With the Secret Management functionality, Couchbase Server provides you a way to
             securely manage server secrets which helps hardening of Couchbase Server. This feature
             allows businesses to fulfill important requirements around their server secrets needed
-            for compliance. For more information, see <xref
-              href="../security/secret-mgmt.dita">Secret Management and
-              Hardening</xref>.</dd>
-      </dlentry>
+            for compliance. For more information, see <xref href="../security/secret-mgmt.dita"
+              >Secret Management and Hardening</xref>.</dd>
+        </dlentry>
       </dl>
-    </section>
-    <section><title>N1QL Enhancements</title><p>N1QL introduces a number of new functions and performance optimizations in the Couchbase Server 4.6 Query engine. 
-      <dl>
-      <dlentry>
-        <dt>String Functions</dt>
-        <dd>The following new string functions are added. For more details and examples, see <xref
-                href="../n1ql/n1ql-language-reference/stringfun.dita"/>.<ul>
+      <p><b>N1QL Enhancements</b></p><p>N1QL introduces a number of new functions and performance
+        optimizations in the Couchbase Server 4.6 Query engine. <dl>
+          <dlentry>
+            <dt>String Functions</dt>
+            <dd>The following new string functions are added. For more details and examples, see
+                <xref href="../n1ql/n1ql-language-reference/stringfun.dita"/>.<ul id="ul_qjc_w4k_pz">
                 <li><codeph>TOKENS()</codeph> - Tokenizes given string or JSON object based on
                   specified delimiter and options. When used with GSI functional indexes, this
                   function can bring huge performance improvement to certain queries on text
                   fields.</li>
                 <li><codeph>REVERSE()</codeph> - This function reverses the input string.</li>
               </ul></dd>
-      </dlentry>
-      </dl><dl>
-        <dlentry>
-          <dt>Date Functions</dt>
-          <dd>The following new date functions are added. For more details and examples, see <xref
-                href="../n1ql/n1ql-language-reference/datefun.dita"/>.<ul>
+          </dlentry>
+        </dl><dl>
+          <dlentry>
+            <dt>Date Functions</dt>
+            <dd>The following new date functions are added. For more details and examples, see <xref
+                href="../n1ql/n1ql-language-reference/datefun.dita"/>.<ul id="ul_rjc_w4k_pz">
                 <li><codeph>ARRAY_DATE_RANGE(expression1, expression2, part [,n])</codeph> - Returns
                   an array of dates from the start date until the end date, incrementing the
                   specified ‘part’ of the date/time by ‘n’.</li>
                 <li>
                   <codeph>CLOCK_LOCAL()</codeph> - Returns the local time at the server.</li>
                 <li><codeph>CLOCK_UTC()</codeph> - Returns the Coordinated Universal Time.</li>
-                  <li><codeph>CLOCK_TZ()</codeph> - Returns the time in the specified timezone</li>
-                  <li><codeph>DATE_FORMAT_STR(expression,fmt)</codeph> - Converts a given date
-                  string parameter to the specified format.</li>
-                  <li><codeph>MILLIS_TO_LOCAL(millis,fmt)</codeph> - Converts the UNIX milliseconds
+                <li><codeph>CLOCK_TZ()</codeph> - Returns the time in the specified timezone</li>
+                <li><codeph>DATE_FORMAT_STR(expression,fmt)</codeph> - Converts a given date string
+                  parameter to the specified format.</li>
+                <li><codeph>MILLIS_TO_LOCAL(millis,fmt)</codeph> - Converts the UNIX milliseconds
                   into local time in the specified format.</li>
-                  <li><codeph>MILLIS_TO_TZ(millis,zone)</codeph> - Converts the UNIX milliseconds
-                  into time in the specified timezone. This is alias of
+                <li><codeph>MILLIS_TO_TZ(millis,zone)</codeph> - Converts the UNIX milliseconds into
+                  time in the specified timezone. This is alias of
                     <codeph>MILLIS_TO_ZONE_NAME(millis,zone)</codeph> that is available in earlier
                   versions.</li>
-                  <li><codeph>NOW_LOCAL(void)</codeph> - Returns the current local time at the
-                  server. This is same as <codeph>CLOCK_LOCAL()</codeph> function.</li>
-                  <li><codeph>NOW_TZ(zone)</codeph> - Returns the current time in specified
+                <li><codeph>NOW_LOCAL(void)</codeph> - Returns the current local time at the server.
+                  This is same as <codeph>CLOCK_LOCAL()</codeph> function.</li>
+                <li><codeph>NOW_TZ(zone)</codeph> - Returns the current time in specified
                   timezone.</li>
-                  <li><codeph>NOW_UTC()</codeph> - Returns the current time in UTC.</li>
-                  <li><codeph>STR_TO_TZ(strdate,zone)</codeph>- Returns the specified date string in
+                <li><codeph>NOW_UTC()</codeph> - Returns the current time in UTC.</li>
+                <li><codeph>STR_TO_TZ(strdate,zone)</codeph>- Returns the specified date string in
                   the specified timezone. This is alias of
                     <codeph>STR_TO_ZONE_NAME(strdate,zone)</codeph> available in earlier
                   versions.</li>
-                  <li><codeph>DATE_PART_MILLIS(expression, part [,timezone])</codeph>- A new
+                <li><codeph>DATE_PART_MILLIS(expression, part [,timezone])</codeph>- A new
                     <codeph>timezone</codeph> parameter is added to this existing function. This
                   function first converts the date in UNIX milliseconds into a date string in the
                   specified timezone, and then returns the corresponding part.</li>
               </ul></dd>
-        </dlentry>
-      </dl></p>
+          </dlentry>
+        </dl></p>
       <p>
         <dl>
           <dlentry>
             <dt>Array Functions</dt>
             <dd>The following new Array functions are added. For more details and examples, see
-                <xref
-                href="../n1ql/n1ql-language-reference/arrayfun.dita"
-                >Array Functions</xref>.<ul id="ul_usn_cqx_4y">
-                  <li><codeph>ARRAY_UNION(arr1, arr2, ...)</codeph> - Returns set union of the input
+                <xref href="../n1ql/n1ql-language-reference/arrayfun.dita">Array
+                Functions</xref>.<ul id="ul_sjc_w4k_pz">
+                <li><codeph>ARRAY_UNION(arr1, arr2, ...)</codeph> - Returns set union of the input
                   arrays. It retains only distinct array elements in unspecified order.</li>
-                <li><codeph>ARRAY_SYMDIFF(arr1, arr2)</codeph> - This
-                  function returns disjunctive union of two arrays, that is
-                    <codeph>ARRAY_UNION()</codeph> minus <codeph>ARRAY_INTERSECTION()</codeph>.
-                  Result includes values that are in only one of the arrays. </li>
-                  <li><codeph>ARRAY_SYMDIFFN(arr1, arr2)</codeph> - This function returns symmetric
+                <li><codeph>ARRAY_SYMDIFF(arr1, arr2)</codeph> - This function returns disjunctive
+                  union of two arrays, that is <codeph>ARRAY_UNION()</codeph> minus
+                    <codeph>ARRAY_INTERSECTION()</codeph>. Result includes values that are in only
+                  one of the arrays. </li>
+                <li><codeph>ARRAY_SYMDIFFN(arr1, arr2)</codeph> - This function returns symmetric
                   difference of multiple input arrays. Result includes values that are in odd number
                   of the input arrays.</li>
-              </ul></dd><dd>The following Array functions are updated to take variable number of arguments:<ul
-                id="ul_urn_wdy_4y">
+              </ul></dd>
+            <dd>The following Array functions are updated to take variable number of arguments:<ul
+                id="ul_tjc_w4k_pz">
                 <li><codeph>ARRAY_APPEND()</codeph></li>
                 <li><codeph>ARRAY_CONCAT()</codeph></li>
                 <li><codeph>ARRAY_INSERT()</codeph></li>
@@ -132,24 +253,24 @@
           <dlentry>
             <dt>Object Functions</dt>
             <dd>The following new object functions are added. For more details and examples, see
-                <xref href="../n1ql/n1ql-language-reference/objectfun.dita"/>.<ul
-                id="ul_utp_cqx_4y">
+                <xref href="../n1ql/n1ql-language-reference/objectfun.dita"/>.<ul id="ul_ujc_w4k_pz">
                 <li><codeph>OBJECT_CONCAT()</codeph> - Concatenates two JSON objects and returns an
                   object that includes fields from all input objects.</li>
                 <li><codeph>OBJECT_REMOVE()</codeph> - Removes specified fields from the input
                   object.</li>
               </ul></dd>
-          </dlentry><dlentry>
+          </dlentry>
+          <dlentry>
             <dt>Performance Improvements</dt>
             <dd>Couchbase Server 4.6 includes over 35 optimizations in the N1QL query engine spread
               across query planning, better index selection, more efficient query processing
               algorithms, operator pushdown to index, and efficient resource management. These
-              optimizations are described below: <ul id="ul_kqw_ghy_4y">
+              optimizations are described below: <ul id="ul_vjc_w4k_pz">
                 <li><b>Block Nested Loop JOINs</b>: The JOIN algorithm is improved to perform batch
                   processing through various stages of the JOIN, such as fetching documents from
                   data-service and the nested loop join of documents from the left side and right
                   side keyspaces/buckets.</li>
-                <li><b>Covering Index Optimizations</b>: <ul>
+                <li><b>Covering Index Optimizations</b>: <ul id="ul_wjc_w4k_pz">
                     <li>Queries using BETWEEN are optimized to leverage covering indexes.</li>
                     <li>Query planning is optimized to pick a covering non-array index over an array
                       index when both indexes are available and qualifying for a query.</li>
@@ -160,7 +281,8 @@
                   </ul></li>
                 <li><b>IntersectScan Optimizations</b>: This is a query operator to use multiple
                   qualifying indexes for a query with conjunctive predicates. Multiple enhancements
-                  are made to optimally use IntersectScans (that is, to avoid or leverage them appropriately).<ul>
+                  are made to optimally use IntersectScans (that is, to avoid or leverage them
+                    appropriately).<ul id="ul_xjc_w4k_pz">
                     <li>Avoid IntersectScan on duplicate/replica indexes with same definition, or
                       when the indexes have overlapping definitions (in which case pick the minimal
                       index). In such case, query planner is optimized to pick a single index.</li>
@@ -173,7 +295,7 @@
                 <li><b>IndexCountScan Optimizations</b>: This is a query operator that makes
                     <codeph>COUNT()</codeph> operations efficient by pushing down the operation to
                   Index whenever possible. Following scenarios are enabled to pushdown
-                    <codeph>COUNT()</codeph>.<ul>
+                    <codeph>COUNT()</codeph>.<ul id="ul_yjc_w4k_pz">
                     <li>Queries with conjunctive/AND predicates with IN/WITHIN clause having all
                       static values. Note that, IndexCountScan pushdown doesn’t happen when
                       where-clause contains an OR predicate or uses query-parameters in the
@@ -190,9 +312,7 @@
           </dlentry>
         </dl>
       </p>
-    </section>
-    <section><title>Full Text Search [Developer Preview]</title>
-      <dl>
+      <p><b>Full Text Search [Developer Preview]</b></p><dl>
         <dlentry>
           <dt>Faster Full Text Indexing and Queries</dt>
           <dd>Full text search (FTS) in 4.6 is noticeably snappier due to many performance
@@ -218,7 +338,8 @@
             document body. (By default, FTS looks for an attribute named “type”). With this
             enhancement, it’s easier to support the common data modeling style in which the document
             type is indicated by a portion of the key, for example, “user::will.gardella”. See <xref
-              href="../fts/fts-creating-indexes.dita#topic_ksl_wwk_1v/fts-index-mapping">Index Type Mapping By Keys</xref> for more information.</dd>
+              href="../fts/fts-creating-indexes.dita#topic_ksl_wwk_1v/fts-index-mapping">Index Type
+              Mapping By Keys</xref> for more information.</dd>
         </dlentry>
         <dlentry>
           <dt>Sorting</dt>
@@ -229,22 +350,21 @@
               href="../fts/fts-sorting.dita#topic_l2x_pkx_vx"/> for more information.</dd>
         </dlentry>
       </dl>
-    </section>
-    <section><title>CBImport and CBExport Tools [Developer Preview]</title>
-      <p>This release introduces tools to import and export data to and from Couchbase Server. <codeph>cbimport</codeph> imports data from a CSV file or a JSON document, and <codeph>cbexport</codeph> exports data as a JSON document. For more information, see <xref href="../tools/cbimport.dita"/> and <xref href="../tools/cbexport.dita"/>.</p>
-    </section>
-    <section><title>Data Structures for Simplified Application Development</title><p dir="ltr"
-        >Couchbase is extending the programming model with the new Datastructure SDK feature,
-        further simplifies application development. Building on Couchbase Server 4.5’s support for
-        sub-document level changes, Couchbase has now added support for lists, maps, sets, and
-        queues to libraries for Java, .NET, Node.js, and PHP among other platforms.
-      </p>Datastructure is built on standard JSON giving developers access to the complete set of
-      Couchbase’s best-in-class data access options, including N1QL and Full Text Search. The new
-      structures and other services work seamlessly with the same underlying data representation.
-      For example, a Java developer can use the Java Collections Framework with the list interface
-      and still use SQL standard query to access the same data from N1QL.</section>
-    <section><title>Big Data Connectors for Spark and Kafka</title>
-      <dl>
+      <p><b>CBImport and CBExport Tools [Developer Preview]</b></p> This release introduces tools to
+      import and export data to and from Couchbase Server. <codeph>cbimport</codeph> imports data
+      from a CSV file or a JSON document, and <codeph>cbexport</codeph> exports data as a JSON
+      document. For more information, see <xref href="../tools/cbimport.dita"/> and <xref
+        href="../tools/cbexport.dita"/>. <p/><p><b>Data Structures for Simplified Application
+          Development</b></p><p dir="ltr">Couchbase is extending the programming model with the new
+        Datastructure SDK feature, further simplifies application development. Building on Couchbase
+        Server 4.5’s support for sub-document level changes, Couchbase has now added support for
+        lists, maps, sets, and queues to libraries for Java, .NET, Node.js, and PHP among other
+        platforms. </p>Datastructure is built on standard JSON giving developers access to the
+      complete set of Couchbase’s best-in-class data access options, including N1QL and Full Text
+      Search. The new structures and other services work seamlessly with the same underlying data
+      representation. For example, a Java developer can use the Java Collections Framework with the
+      list interface and still use SQL standard query to access the same data from N1QL.
+          <p/><p><b>Big Data Connectors for Spark and Kafka</b></p><dl>
         <dlentry>
           <dt>Spark Connector 2.0</dt>
           <dd><p dir="ltr">Support for Spark 2.0 is now available, including the <b>Structured
@@ -273,7 +393,7 @@
               <b>SSL support</b> can now easily be enabled simply by setting a configuration
             property. </dd>
           <dd>Various important efficiency improvements make better use of connections and resources
-            with the Connector. <ul id="ul_zhy_1gy_4y">
+            with the Connector. <ul id="ul_dkc_w4k_pz">
               <li>The Connector now has <b>node partition distribution awareness</b>, allowing the
                 cluster map to send DCP stream partitions to Kafka tasks, reducing socket
                 connections. </li>
@@ -289,5 +409,9 @@
         </dlentry>
       </dl>
     </section>
+   
+      
+    
+   
   </body>
 </topic>
